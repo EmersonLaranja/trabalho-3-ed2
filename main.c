@@ -26,12 +26,27 @@ int main(int argc, char const *argv[])
 
   //Ler graph.txt
   FILE *graphFile = fopen("./input/graph.txt", "r");
-  //getLinks(graphFile, pages, numberPages);
+  readLinksOut(graphFile, pages, numberPages);
 
-  /*  for (int i = 0; i < numberPages; i++)
+  for (int i = 0; i < numberPages; i++)
   {
-    printPage(pages[i]); 
+    setPageLinksIn(pages[i],pages,numberPages);
+    printCompletePage(pages[i]); 
   }
-*/
+
+  //Libera a memória
+  for (int i = 0; i < numberPages; i++)
+  {
+    destroyPage(pages[i]);
+  }
+  for (int i = 0; i < numberStopWords; i++)
+  {
+    free(stopWords[i]);
+  }
+  free(pages);
+  free(stopWords);
+  fclose(stopWordsFile);
+  fclose(fileIn);
+  fclose(graphFile);
   return 0;
 }

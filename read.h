@@ -9,6 +9,6 @@ Page **getPages(FILE *file, int *numberPages);
 // char **getStopWords(FILE *file, int *numberPages);
 //void getLinks(FILE *file, Page **pages, int numberPages);
 char **getStopWords(FILE *file, int *numberStopWords);
-void getLinks(FILE *file, Page **pages, int numberPages);
+void readLinksOut(FILE *file, Page **pages, int numberPages);
 
 #endif /* READ_H */

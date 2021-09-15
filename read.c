@@ -41,9 +41,9 @@ Page **getPages(FILE *file, int *numberPages)
   return pages;
 }
 
-void getLinks(FILE *file, Page **pages, int numberPages)
+void readLinksOut(FILE *file, Page **pages, int numberPages)
 {
-  char *name;
+  char name[30];
   int numLinks;
   Page *page, *link;
   for (int i = 0; i < numberPages; i++)
@@ -51,15 +51,27 @@ void getLinks(FILE *file, Page **pages, int numberPages)
 
     fscanf(file, "%s %d", name, &numLinks);
     page = getPageByName(pages, numberPages, name);
-    Page *links[numLinks];
+    if (!page)
+    {
+      printf("ERRO: página %s não encontrada \n", name);
+      exit(1);
+    }
+    Page **links= (Page**)malloc(sizeof(Page*)* numLinks);
     for (int j = 0; j < numLinks; j++)
     {
       fscanf(file, "%s", name);
       link = getPageByName(pages, numberPages, name);
+      if (!link)
+      {
+        printf("ERRO: página %s não encontrada \n", name);
+        exit(1);
+      }
       links[j] = link;
     }
     setPageLinksOut(page, links, numLinks);
   }
+
+
 }
 
 char **getStopWords(FILE *file, int *numberStopWords)

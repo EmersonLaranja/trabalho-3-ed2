@@ -17,4 +17,9 @@ Page *getPageByName(Page **pages, int numPages, char *name);
 void printPage(Page *page);
 void setPageLinksOut(Page *page, Page **links, int numLinks);
 void setPageLinksIn(Page *page, Page **pages, int numPages);
+void printCompletePage(Page *page);
+Page* getLinkInPage(Page* page, int index);
+void printPageLinksOut(Page* page);
+
+Page* getLinkOutPage(Page* page, int index);
 #endif
