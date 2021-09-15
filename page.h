@@ -15,6 +15,6 @@ int getNumberLinksOut(Page *page);
 double getPageRank(Page *page);
 Page *getPageByName(Page **pages, int numPages, char *name);
 void printPage(Page *page);
-void setPageLinksIn(Page *page, Page **links, int numLinks);
 void setPageLinksOut(Page *page, Page **links, int numLinks);
+void setPageLinksIn(Page *page, Page **pages, int numPages);
 #endif

@@ -16,32 +16,22 @@ int main(int argc, char const *argv[])
   Page **pages;
   pages = getPages(fileIn, &numberPages);
 
-  printf("NumberPages = %d\n", numberPages);
-
-  for (int i = 0; i < numberPages; i++)
-  {
-    printPage(pages[i]);
-  }
-
-  //Ler graph.txt
-  //FILE *graphFile = fopen('graph.txt', "r");
-  //getLinks(graphFile, pages, numberPages);
-
-  //Ler stopWords em um vetor de stopwords
   char **stopWords;
   int numberStopWords = 0;
 
   FILE *stopWordsFile = fopen("./input/stopwords.txt", "r");
-  if (stopWordsFile == NULL)
-    printf("Error opening stopwords");
-  // stopWords = getStopWords(stopWordsFile, &numberStopWords);
+  verifyFileWasOpened(stopWordsFile);
 
-  // printf("NumberStopords = %d\n", numberStopWords);
+  stopWords = getStopWords(stopWordsFile, &numberStopWords);
 
-  // for (int i = 0; i < numberStopWords; i++)
-  // {
-  //   printf("StopWords[%d]: %s\n", i, stopWords[i]);
-  // }
+  //Ler graph.txt
+  FILE *graphFile = fopen("./input/graph.txt", "r");
+  //getLinks(graphFile, pages, numberPages);
 
+  /*  for (int i = 0; i < numberPages; i++)
+  {
+    printPage(pages[i]); 
+  }
+*/
   return 0;
 }

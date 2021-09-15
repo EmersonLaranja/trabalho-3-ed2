@@ -21,29 +21,42 @@ Page *initPage(char *name)
   return page;
 };
 
-void setPageLinksIn(Page *page, Page **links, int numLinks)
-{
-  page->numLinksIn = numLinks;
-  page->linksIn = (Page **)malloc(numLinks * sizeof(Page *));
-  page->linksIn = links;
-}
-
 void setPageLinksOut(Page *page, Page **links, int numLinks)
 {
   page->numLinksOut = numLinks;
-  page->linksOut = (Page **)malloc(numLinks * sizeof(Page *));
   page->linksOut = links;
 }
 
-void setPageLinksIn2(Page *page, Page **pages, int numPages)
+void setPageLinksIn(Page *page, Page **pages, int numPages)
 {
+
   int totalNumLinks = 0;
   int pageNumLinks = 0;
+  Page *p;
+  //Conta a quantidade de links
   for (int i = 0; i < numPages; i++)
   {
-    pageNumLinks = pages[i]->numLinksOut;
-    for (int j = 0; j < numPages; j++)
+    p = pages[i];
+    pageNumLinks = p->numLinksOut;
+    for (int j = 0; j < pageNumLinks; j++)
+      if (!strcmp(p->name, page->name))
+        totalNumLinks++;
   }
+
+  Page *links[totalNumLinks];
+  //Adiciona os links na lista
+  for (int i = 0; i < numPages; i++)
+  {
+    p = pages[i];
+    pageNumLinks = p->numLinksOut;
+    for (int j = 0; j < pageNumLinks; j++)
+      if (!strcmp(p->name, page->name))
+        links[i] = p;
+  }
+
+  //Adiciona na struct
+  page->numLinksIn = totalNumLinks;
+  page->linksIn = links;
 }
 
 void printPage(Page *page)

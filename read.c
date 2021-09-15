@@ -43,9 +43,22 @@ Page **getPages(FILE *file, int *numberPages)
 
 void getLinks(FILE *file, Page **pages, int numberPages)
 {
+  char *name;
+  int numLinks;
+  Page *page, *link;
   for (int i = 0; i < numberPages; i++)
   {
-    pages[i] = initPage(pageName);
+
+    fscanf(file, "%s %d", name, &numLinks);
+    page = getPageByName(pages, numberPages, name);
+    Page *links[numLinks];
+    for (int j = 0; j < numLinks; j++)
+    {
+      fscanf(file, "%s", name);
+      link = getPageByName(pages, numberPages, name);
+      links[j] = link;
+    }
+    setPageLinksOut(page, links, numLinks);
   }
 }
 
@@ -59,7 +72,7 @@ char **getStopWords(FILE *file, int *numberStopWords)
   {
     (*numberStopWords)++;
   }
-  printf("NumberStopords = %d\n", *numberStopWords);
+
   rewind(file);
 
   //Alocar a lista de stopWords;
