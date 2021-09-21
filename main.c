@@ -3,6 +3,7 @@
 #include <string.h>
 #include "read.h"
 #include "page.h"
+#include "pageRank.h"
 
 int main(int argc, char const *argv[])
 {
@@ -13,8 +14,7 @@ int main(int argc, char const *argv[])
   verifyFileWasOpened(fileIn);
 
   int numberPages = 0;
-  Page **pages;
-  pages = getPages(fileIn, &numberPages);
+  Page **pages = getPages(fileIn, &numberPages);
 
   char **stopWords;
   int numberStopWords = 0;
@@ -30,10 +30,11 @@ int main(int argc, char const *argv[])
 
   for (int i = 0; i < numberPages; i++)
   {
-    setPageLinksIn(pages[i],pages,numberPages);
-    printCompletePage(pages[i]); 
+    setPageLinksIn(pages[i], pages, numberPages);
+    //printCompletePage(pages[i]);
   }
 
+  pageRank(pages, numberPages);
   //Libera a memória
   for (int i = 0; i < numberPages; i++)
   {

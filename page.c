@@ -4,6 +4,7 @@
 struct page
 {
   char *name;
+  int id;
   Page **linksIn;
   Page **linksOut;
   double rank;
@@ -11,12 +12,15 @@ struct page
   int numLinksIn;
 };
 
-Page *initPage(char *name)
+Page *initPage(char *name, int id)
 {
   Page *page = (Page *)malloc(sizeof(Page));
+  // page->linksIn = (Page **)malloc(sizeof(Page *));
+  // page->linksOut = (Page **)malloc(sizeof(Page *));
   page->name = strdup(name);
   page->numLinksOut = 0;
   page->numLinksIn = 0;
+  page->id = id;
 
   return page;
 };
@@ -27,13 +31,14 @@ void setPageLinksOut(Page *page, Page **links, int numLinks)
   page->linksOut = links;
 }
 
-void printPageLinksOut(Page* page){
-  printf("%s %p Links Out (%d):\n", page->name, page,page->numLinksOut);
-  for(int i = 0; i<page->numLinksOut; i++){
-    printf(" > %s %p\n",(page->linksOut[i])->name, page->linksOut[i]);
+void printPageLinksOut(Page *page)
+{
+  printf("%s %p Links Out (%d):\n", page->name, page, page->numLinksOut);
+  for (int i = 0; i < page->numLinksOut; i++)
+  {
+    printf(" > %s %p\n", (page->linksOut[i])->name, page->linksOut[i]);
   }
-
-} 
+}
 void setPageLinksIn(Page *page, Page **pages, int numPages)
 {
 
@@ -47,27 +52,29 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
   {
     p = pages[i];
     pageNumLinks = p->numLinksOut;
-    for (int j = 0; j < pageNumLinks; j++){
+    for (int j = 0; j < pageNumLinks; j++)
+    {
       link = p->linksOut[j];
       if (!strcmp(p->linksOut[j]->name, page->name))
         totalNumLinks++;
-      }
+    }
   }
 
-  Page **links= (Page**)malloc(sizeof(Page*)* totalNumLinks);
+  Page **links = (Page **)malloc(sizeof(Page *) * totalNumLinks);
 
-  int linksAux =0;
+  int linksAux = 0;
   //Adiciona os links na lista
   for (int i = 0; i < numPages; i++)
   {
     p = pages[i];
     pageNumLinks = p->numLinksOut;
     for (int j = 0; j < pageNumLinks; j++)
-      if (!strcmp(p->linksOut[j]->name, page->name)){
+      if (!strcmp(p->linksOut[j]->name, page->name))
+      {
         links[linksAux] = p;
         linksAux++;
-      } 
-    }
+      }
+  }
 
   //Adiciona na struct
   page->numLinksIn = totalNumLinks;
@@ -76,26 +83,29 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
 
 void printPage(Page *page)
 {
-  printf("%s (%lf) - %d linksIn - %d linksOut\n", page->name, page->rank, page->numLinksIn, page->numLinksOut);
+  printf("%d %s (%lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
 }
 
 void printCompletePage(Page *page)
 {
-  printf("\n---- %s -----\n", page->name);
+  printf("\n----%d %s -----\n", page->id, page->name);
   printf("Links Out:\n");
-  for(int i = 0; i<page->numLinksOut; i++){
-    printf("    > %s\n",(page->linksOut[i])->name);
+  for (int i = 0; i < page->numLinksOut; i++)
+  {
+    printf("    > %s\n", (page->linksOut[i])->name);
   }
-  
+
   printf("Links In:\n");
-  for(int i = 0; i<page->numLinksIn; i++){
-    printf("    < %s\n",(page->linksIn[i])->name);
+  for (int i = 0; i < page->numLinksIn; i++)
+  {
+    printf("    < %s\n", (page->linksIn[i])->name);
   }
 }
 
 Page *getPageByName(Page **pages, int numPages, char *name)
 {
-  for (int i = 0; i < numPages; i++){
+  for (int i = 0; i < numPages; i++)
+  {
     if (!strcmp(pages[i]->name, name))
       return pages[i];
   }
@@ -107,9 +117,12 @@ Page *destroyPage(Page *page)
 
   if (page != NULL)
   {
-    free(page->name);
-    free(page->linksOut);
-    free(page->linksIn);
+    if (page->name)
+      free(page->name);
+    if (page->linksOut)
+      free(page->linksOut);
+    if (page->linksIn)
+      free(page->linksIn);
     free(page);
   }
 };
@@ -131,11 +144,13 @@ int getNumberLinksIn(Page *page)
     return page->numLinksIn;
 }
 
-Page* getLinkInPage(Page* page, int index){
+Page *getLinkInPage(Page *page, int index)
+{
   return page->linksIn[index];
 }
 
-Page* getLinkOutPage(Page* page, int index){
+Page *getLinkOutPage(Page *page, int index)
+{
   return page->linksOut[index];
 }
 
@@ -143,4 +158,16 @@ double getPageRank(Page *page)
 {
   if (page)
     return page->rank;
+}
+
+int getPageId(Page *page)
+{
+  if (page)
+    return page->id;
+}
+
+void setPageId(Page *page, int id)
+{
+  if (page)
+    page->id = id;
 }

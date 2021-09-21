@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    ".env": "dotenv",
+    "pagerank.h": "c",
+    "string.h": "c",
+    "page.h": "c",
+    "stdlib.h": "c"
+  }
+}
