@@ -88,7 +88,7 @@ void printPage(Page *page)
 
 void printCompletePage(Page *page)
 {
-  printf("\n----%d %s -----\n", page->id, page->name);
+  printf("\n----%d %s (rank: %lf) -----\n", page->id, page->name, page->rank);
   printf("Links Out:\n");
   for (int i = 0; i < page->numLinksOut; i++)
   {
@@ -170,4 +170,9 @@ void setPageId(Page *page, int id)
 {
   if (page)
     page->id = id;
+}
+void setPageRank(Page *page, double rank )
+{
+  if (page)
+    page->rank = rank;
 }

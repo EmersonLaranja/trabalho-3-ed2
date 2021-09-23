@@ -31,10 +31,15 @@ int main(int argc, char const *argv[])
   for (int i = 0; i < numberPages; i++)
   {
     setPageLinksIn(pages[i], pages, numberPages);
-    //printCompletePage(pages[i]);
   }
 
   pageRank(pages, numberPages);
+  
+  for (int i = 0; i < numberPages; i++)
+  {
+    printPage(pages[i]);
+  }
+
   //Libera a memória
   for (int i = 0; i < numberPages; i++)
   {

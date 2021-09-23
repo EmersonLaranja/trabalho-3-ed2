@@ -56,22 +56,22 @@ double summation(PageRank **pages, int id)
 
 int comparePages(const void *a, const void *b)
 {
-  if ((*(PageRank *)a).value == (*(PageRank *)b).value)
+  if ((*(PageRank **)a)->value == (*(PageRank **)b)->value)
   {
-
-    // Same PageRank values, comparing indices.
-    if ((*(PageRank *)a).pageId > (*(PageRank *)b).pageId)
-    {
+    // Same PageRank values, comparing indices->
+    if ((*(PageRank **)a)->pageId > (*(PageRank **)b)->pageId){
       return -1;
-    }
-    else
+    }else{
       return 1;
   }
 
-  if ((*(PageRank *)a).value < (*(PageRank *)b).value)
+  if ((*(PageRank **)a)->value < (*(PageRank **)b)->value){
     return -1;
-  else
+  }
+  else{   
     return 1;
+  }
+}
 }
 
 void pageRank(Page **pagesAux, int numPages)
@@ -91,13 +91,17 @@ void pageRank(Page **pagesAux, int numPages)
     pages[i] = (PageRank *)malloc(sizeof(PageRank));
     pages[i]->pageId = i;
     pages[i]->oldValue = (1 / (double)n_pages);
+    pages[i]->value = 0;
+
     int numLinks = getNumberLinksIn(pagesAux[i]);
+
     pages[i]->n_in = numLinks;
     pages[i]->in = (int *)malloc(sizeof(int) * numLinks);
-    for (int j = 0; j < numLinks; j++)
 
+    for (int j = 0; j < numLinks; j++){
       pages[i]->in[j] = getPageId(getLinkInPage(pagesAux[i], j));
-
+    }
+    
     pages[i]->n_out = getNumberLinksOut(pagesAux[i]);
   }
 
@@ -129,26 +133,22 @@ void pageRank(Page **pagesAux, int numPages)
       }
     }
 
-    // Finishes if E(k) < ε.
-    //if (E(pages, n_pages) == 1)
-    // finished = 1;
+    //Finishes if E(k) < ε.
+    if (E(pages, n_pages) == 1)
+    finished = 1;
 
-    // Indicates if calculation is finished.
-    /*double sum = 0;
-    for (int i = 0; i < n_pages; i++)
-    {
-      double old = pages[i]->oldValue;
-      double value = pages[i]->value;
-
-      sum += (value - old) * (value - old);
-    }
-
-    if (sqrt(sum) < 0.0000000001)
-      finished = 1;*/
   }
 
+  for (int i = 0; i < n_pages; i++)
+  {
+    setPageRank(pagesAux[i], pages[i]->value);
+    printf("rank %lf\n ", getPageRank(pagesAux[i]));
+  }
+
+
   // Sorting pages and printing order.
-  /* qsort(pages, n_pages, sizeof(PageRank), comparePages);
+  qsort(pages, n_pages, sizeof(PageRank*), comparePages);
+
 
   printf("Ordered Pages: \n");
   printf("{");
@@ -161,11 +161,11 @@ void pageRank(Page **pagesAux, int numPages)
     else
       printf("}\n");
   }
-*/
   // Freeing alocated memory.
   for (int i = 0; i < n_pages; i++)
   {
     free(pages[i]->in);
+    free(pages[i]);
   }
   free(pages);
 }

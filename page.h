@@ -23,4 +23,5 @@ Page *getLinkInPage(Page *page, int index);
 void printPageLinksOut(Page *page);
 void setPageId(Page *page, int id);
 Page *getLinkOutPage(Page *page, int index);
+void setPageRank(Page *page, double rank );
 #endif

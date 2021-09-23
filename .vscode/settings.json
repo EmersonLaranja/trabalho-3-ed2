@@ -4,6 +4,7 @@
     "pagerank.h": "c",
     "string.h": "c",
     "page.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "type_traits": "c"
   }
 }
