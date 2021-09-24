@@ -1,5 +1,5 @@
 #include "read.h"
-
+#define MAX_WORD_SIZE 50
 void verifyArgsLength(int numArgs)
 {
   if (numArgs < 2)
@@ -91,6 +91,52 @@ char **getStopWords(FILE *file, int *numberStopWords)
   for (int i = 0; fscanf(file, "%s", stopWord) != EOF; i++)
   {
     stopWords[i] = strdup(stopWord);
+    toLowerCase(stopWords[i]);
   }
   return stopWords;
+}
+
+Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords, Tst *tst)
+{
+  for (int i = 0; i < numberPages; i++)
+  {
+    char path[MAX_WORD_SIZE] = "./input/pages/";
+    FILE *file = fopen(strcat(path, getPageName(pages[i])), "r");
+    if (file == NULL)
+    {
+      printf("ERRO: falha na abertura do arquivo da pagina %s\n", getPageName(pages[i]));
+      exit(1);
+    }
+    char word[MAX_WORD_SIZE];
+
+    while (EOF != fscanf(file, "%s ", word))
+    {
+      toLowerCase(word);
+      if (!isStopWord(word, stopWords, numStopWords))
+      {
+        insert(&tst, word, numberPages, pages[i]);
+      }
+    }
+    fclose(file);
+  }
+
+  return tst;
+}
+
+int isStopWord(char *word, char **stopWords, int numStopWords)
+{
+  for (int i = 0; i < numStopWords; i++)
+    if (strcmp(word, stopWords[i]) == 0)
+      return 1;
+
+  return 0;
+}
+
+void toLowerCase(char *word)
+{
+  while (*word)
+  {
+    *word = tolower((unsigned char)*word);
+    word++;
+  }
 }

@@ -1,10 +1,6 @@
 {
   "files.associations": {
     ".env": "dotenv",
-    "pagerank.h": "c",
-    "string.h": "c",
-    "page.h": "c",
-    "stdlib.h": "c",
-    "type_traits": "c"
+    "read.h": "c"
   }
 }

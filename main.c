@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "read.h"
-#include "page.h"
 #include "pageRank.h"
-
+#include "tst.h"
 int main(int argc, char const *argv[])
 {
   //Ler index.txt e retornar a quantidade de paginas
@@ -34,12 +33,27 @@ int main(int argc, char const *argv[])
   }
 
   pageRank(pages, numberPages);
-  
+
   for (int i = 0; i < numberPages; i++)
   {
     printPage(pages[i]);
   }
 
+  Tst *tst = NULL;
+  tst = readPages(pages, numberPages, stopWords, numberStopWords, tst);
+  traverseTst(tst);
+
+  Page **findPages = (Page **)malloc((numberPages) * sizeof(Page *));
+  findPages = searchTST(tst, "abacate ruim");
+  if (findPages != NULL)
+  {
+    for (int i = 0; i < numberPages; i++)
+    {
+      if (findPages[i] == NULL)
+        break;
+      printPage(findPages[i]);
+    }
+  }
   //Libera a memória
   for (int i = 0; i < numberPages; i++)
   {
