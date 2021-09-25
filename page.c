@@ -83,7 +83,9 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
 
 void printPage(Page *page)
 {
-  printf("%d %s (%lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
+ // printf("%d %s (%lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
+ 
+ printf("%s ",page->name);
 }
 
 void printCompletePage(Page *page)
@@ -107,6 +109,16 @@ Page *getPageByName(Page **pages, int numPages, char *name)
   for (int i = 0; i < numPages; i++)
   {
     if (!strcmp(pages[i]->name, name))
+      return pages[i];
+  }
+  return NULL;
+}
+
+Page *getPageById(Page **pages, int numPages, int id)
+{
+  for (int i = 0; i < numPages; i++)
+  {
+    if (pages[i]->id == id)
       return pages[i];
   }
   return NULL;
@@ -175,4 +187,19 @@ void setPageRank(Page *page, double rank )
 {
   if (page)
     page->rank = rank;
+}
+
+int comparePages(const void *a, const void *b)
+{
+    // Same PageRank values, comparing indices->
+    if ((*(Page **)a)->rank > (*(Page **)b)->rank)
+      return -1;
+    else if ((*(Page **)a)->rank < (*(Page **)b)->rank)
+          return 1;
+
+    return 0;
+}
+
+void sortPage(Page** pages, int numPages){
+   qsort(pages, numPages, sizeof(Page *), comparePages);
 }

@@ -1,4 +1,7 @@
 #include "read.h"
+#include "pageRank.h"
+#include <stdbool.h>
+#include "string.h"
 #define MAX_WORD_SIZE 50
 void verifyArgsLength(int numArgs)
 {
@@ -139,4 +142,83 @@ void toLowerCase(char *word)
     *word = tolower((unsigned char)*word);
     word++;
   }
+}
+void getSearchWords(int numberPages, Page **pages, Tst *tst)
+{
+  FILE *file = fopen("searches.txt", "r");
+  if (file == NULL)
+  {
+    printf("ERRO: falha na abertura do arquivo searches.txt\n");
+    exit(1);
+  }
+
+  size_t len = 300;
+  char *line = (char *)malloc(sizeof(char) * len);
+  char token[] = " ";
+  char *word = NULL;
+  int weightId[numberPages];
+  int numSearchWord = 0;
+ 
+
+  // Enquanto ha linhas no arquivo de entrada
+  while (getline(&line, &len, file) > 0){
+    char *pos;
+    if ((pos=strchr(line, '\n')) != NULL)
+        *pos = '\0';
+
+    for (int i = 0; i < numberPages; i++)
+      weightId[i] = 0;
+  
+   printf("search:");
+    int resultsId[numberPages];
+    word = strtok(line, token);
+      
+
+    while (word != NULL)
+    {
+      Page **pages = searchTST(tst, word);
+      
+      if(pages != NULL){
+      for (int i = 0; i < numberPages; i++)
+      {
+       // if(pages[i] != NULL) printPage(pages[i]);
+        if (pages[i] == NULL) break;
+
+        int id = getPageId(pages[i]);
+
+        weightId[id]++;
+      }}
+      
+      printf("%s ", word);
+      word = strtok(NULL, token);
+
+      numSearchWord++;
+    };
+
+  
+    Page **results = (Page **)malloc((numberPages) * sizeof(Page *));
+    int numResult=0;
+    // Retornar a lista unica
+    for(int i = 0; i < numberPages; i++){
+        if( weightId[i] == numSearchWord ){
+          results[numResult] = getPageById(pages,numberPages,i);
+          numResult++;
+        }
+    }
+
+    sortPage(results, numResult);
+
+    printf("\npages:");
+     for (int i = 0; i < numResult; i++){
+      printPage(results[i]);
+    }
+  
+    printf("\npr: ");
+
+    for (int i = 0; i < numResult; i++){
+      printf("%lf ", getPageRank(results[i]));
+    }
+    printf("\n");
+
+}
 }

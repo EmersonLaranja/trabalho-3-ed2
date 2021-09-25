@@ -54,33 +54,9 @@ double summation(PageRank **pages, int id)
   return sum;
 }
 
-int comparePages(const void *a, const void *b)
+void pageRank(Page **allPages, int numPages)
 {
-  if ((*(PageRank **)a)->value == (*(PageRank **)b)->value)
-  {
-    // Same PageRank values, comparing indices->
-    if ((*(PageRank **)a)->pageId > (*(PageRank **)b)->pageId)
-    {
-      return -1;
-    }
-    else
-    {
-      return 1;
-    }
 
-    if ((*(PageRank **)a)->value < (*(PageRank **)b)->value)
-    {
-      return -1;
-    }
-    else
-    {
-      return 1;
-    }
-  }
-}
-
-void pageRank(Page **pagesAux, int numPages)
-{
   // Number of pages, pages array and alocate status check.
   int n_pages = numPages;
   PageRank **pages = (PageRank **)malloc(sizeof(PageRank *) * n_pages);
@@ -89,7 +65,7 @@ void pageRank(Page **pagesAux, int numPages)
 
   for (int i = 0; i < n_pages; i++)
   {
-    setPageId(pagesAux[i], i);
+    setPageId(allPages[i], i);
   }
   for (int i = 0; i < n_pages; i++)
   {
@@ -98,17 +74,17 @@ void pageRank(Page **pagesAux, int numPages)
     pages[i]->oldValue = (1 / (double)n_pages);
     pages[i]->value = 0;
 
-    int numLinks = getNumberLinksIn(pagesAux[i]);
+    int numLinks = getNumberLinksIn(allPages[i]);
 
     pages[i]->n_in = numLinks;
     pages[i]->in = (int *)malloc(sizeof(int) * numLinks);
 
     for (int j = 0; j < numLinks; j++)
     {
-      pages[i]->in[j] = getPageId(getLinkInPage(pagesAux[i], j));
+      pages[i]->in[j] = getPageId(getLinkInPage(allPages[i], j));
     }
 
-    pages[i]->n_out = getNumberLinksOut(pagesAux[i]);
+    pages[i]->n_out = getNumberLinksOut(allPages[i]);
   }
 
   // Calculating PageRank.
@@ -146,24 +122,9 @@ void pageRank(Page **pagesAux, int numPages)
 
   for (int i = 0; i < n_pages; i++)
   {
-    setPageRank(pagesAux[i], pages[i]->value);
+    setPageRank(allPages[i], pages[i]->value);
   }
 
-  // Sorting pages and printing order.
-  qsort(pages, n_pages, sizeof(PageRank *), comparePages);
-
-  printf("Ordered Pages: \n");
-  printf("{");
-  for (int cont = n_pages - 1; cont >= 0; cont--)
-  {
-    printf("%d", pages[cont]->pageId);
-
-    if (cont != 0)
-      printf(", ");
-    else
-      printf("}\n");
-  }
-  // Freeing alocated memory.
   for (int i = 0; i < n_pages; i++)
   {
     free(pages[i]->in);

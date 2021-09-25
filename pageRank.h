@@ -10,8 +10,8 @@ typedef struct pagerank PageRank;
 
 int E(PageRank **pages, int N);
 double summation(PageRank **pages, int id);
-int comparePages(const void *a, const void *b);
 void pageRank(Page **pagesAux, int numPages);
-void pageRank(Page **pagesAux, int numPages);
+
+
 
 #endif

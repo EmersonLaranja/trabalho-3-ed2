@@ -4,10 +4,25 @@
 #include "read.h"
 #include "pageRank.h"
 #include "tst.h"
+#include <ctype.h>
+
+void toLowerCase2(char *word)
+{
+  while (*word)
+  {
+    if(strcmp(word ,"0")&&strcmp(word ,"1")&&strcmp(word ,"2")&&strcmp(word ,"3")&&strcmp(word ,"4"))
+      *word = tolower((unsigned char)*word);
+    word++;
+  }
+}
+
 int main(int argc, char const *argv[])
 {
   //Ler index.txt e retornar a quantidade de paginas
-
+  char* s = "ABc123";
+    printf("%s in lowercase is represented as ",s);
+    toLowerCase2(s);
+    printf("%s", s);
   verifyArgsLength(argc);
   FILE *fileIn = fopen(argv[1], "r");
   verifyFileWasOpened(fileIn);
@@ -32,28 +47,14 @@ int main(int argc, char const *argv[])
     setPageLinksIn(pages[i], pages, numberPages);
   }
 
-  pageRank(pages, numberPages);
-
-  for (int i = 0; i < numberPages; i++)
-  {
-    printPage(pages[i]);
-  }
 
   Tst *tst = NULL;
   tst = readPages(pages, numberPages, stopWords, numberStopWords, tst);
-  traverseTst(tst);
 
-  Page **findPages = (Page **)malloc((numberPages) * sizeof(Page *));
-  findPages = searchTST(tst, "abacate ruim");
-  if (findPages != NULL)
-  {
-    for (int i = 0; i < numberPages; i++)
-    {
-      if (findPages[i] == NULL)
-        break;
-      printPage(findPages[i]);
-    }
-  }
+  pageRank(pages, numberPages);
+ 
+  getSearchWords( numberPages,pages,  tst);
+
   //Libera a memória
   for (int i = 0; i < numberPages; i++)
   {
@@ -63,6 +64,7 @@ int main(int argc, char const *argv[])
   {
     free(stopWords[i]);
   }
+destroyTST(tst);
   free(pages);
   free(stopWords);
   fclose(stopWordsFile);
