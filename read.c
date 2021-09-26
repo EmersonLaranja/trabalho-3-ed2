@@ -38,9 +38,8 @@ Page **getPages(FILE *file, int *numberPages)
   Page **pages = (Page **)malloc((*numberPages) * sizeof(Page *));
 
   for (int i = 0; fscanf(file, "%s", pageName) != EOF; i++)
-  {
     pages[i] = initPage(pageName, i);
-  }
+
   return pages;
 }
 
@@ -116,9 +115,7 @@ Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords
     {
       toLowerCase(word);
       if (!isStopWord(word, stopWords, numStopWords))
-      {
         insert(&tst, word, numberPages, pages[i]);
-      }
     }
     fclose(file);
   }
@@ -143,6 +140,7 @@ void toLowerCase(char *word)
     word++;
   }
 }
+
 void getSearchWords(int numberPages, Page **pages, Tst *tst)
 {
   FILE *file = fopen("searches.txt", "r");
@@ -158,67 +156,75 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
   char *word = NULL;
   int weightId[numberPages];
   int numSearchWord = 0;
- 
+  Page **results, ** pagesSearch;
 
   // Enquanto ha linhas no arquivo de entrada
   while (getline(&line, &len, file) > 0){
+    //Retira o caracter \n
     char *pos;
-    if ((pos=strchr(line, '\n')) != NULL)
-        *pos = '\0';
+    if ((pos = strchr(line, '\n')) != NULL)
+      *pos = '\0';
 
     for (int i = 0; i < numberPages; i++)
       weightId[i] = 0;
-  
-   printf("search:");
+
+    printf("search:");
     int resultsId[numberPages];
     word = strtok(line, token);
-      
 
     while (word != NULL)
     {
-      Page **pages = searchTST(tst, word);
-      
-      if(pages != NULL){
-      for (int i = 0; i < numberPages; i++)
+      pagesSearch = searchTST(tst, word);
+
+      if (pagesSearch)
       {
-       // if(pages[i] != NULL) printPage(pages[i]);
-        if (pages[i] == NULL) break;
+        for (int i = 0; i < numberPages; i++)
+        {
+          if (pagesSearch[i] == NULL)
+            break;
 
-        int id = getPageId(pages[i]);
+          int id = getPageId(pagesSearch[i]);
 
-        weightId[id]++;
-      }}
-      
+          weightId[id]++;
+        }
+      }
+
       printf("%s ", word);
       word = strtok(NULL, token);
 
       numSearchWord++;
     };
 
-  
-    Page **results = (Page **)malloc((numberPages) * sizeof(Page *));
-    int numResult=0;
-    // Retornar a lista unica
-    for(int i = 0; i < numberPages; i++){
-        if( weightId[i] == numSearchWord ){
-          results[numResult] = getPageById(pages,numberPages,i);
-          numResult++;
-        }
+    results = (Page **)malloc((numberPages) * sizeof(Page *));
+    int numResult = 0;
+    //Retornar a lista unica
+    for (int i = 0; i < numberPages; i++)
+    {
+      if (weightId[i] == numSearchWord)
+      {
+        results[numResult] = getPageById(pages, numberPages, i);
+        numResult++;
+      }
     }
 
     sortPage(results, numResult);
 
     printf("\npages:");
-     for (int i = 0; i < numResult; i++){
+    for (int i = 0; i < numResult; i++)
+    {
       printPage(results[i]);
     }
-  
+
     printf("\npr: ");
 
-    for (int i = 0; i < numResult; i++){
+    for (int i = 0; i < numResult; i++)
+    {
       printf("%lf ", getPageRank(results[i]));
     }
     printf("\n");
+    free(results);
+  }
 
-}
+  free(line);
+  fclose(file);
 }

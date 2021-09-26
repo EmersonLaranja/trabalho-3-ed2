@@ -126,8 +126,7 @@ Page *getPageById(Page **pages, int numPages, int id)
 
 Page *destroyPage(Page *page)
 {
-
-  if (page != NULL)
+  if (page)
   {
     if (page->name)
       free(page->name);

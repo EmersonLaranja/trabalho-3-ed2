@@ -127,6 +127,11 @@ Page **searchTST(Tst *root, char *word)
 
 void destroyTST(Tst *root)
 {
-  free(root->pages);
-  free(root);
+  if(root){
+    free(root->pages);
+    destroyTST(root->left);
+    destroyTST(root->mid);
+    destroyTST(root->right);
+    free(root);
+  }
 }
