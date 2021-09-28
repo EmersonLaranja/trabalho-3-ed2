@@ -32,36 +32,45 @@ Tst *initTst(char letter, int numberPages)
 // Function to insert a new word in a Ternary Search Tree
 void insert(Tst **root, char *word, int numberPages, Page *page)
 {
-  // Base Case: Tree is empty
-  if (!(*root))
+  if (*word >= 'A' && *word <= 'Z' || *word >= 'a' && *word <= 'z' || *word >= '0' && *word <= '9' || '-')
   {
-    *root = initTst(*word, numberPages);
-  }
+    if (*word >= 'A' && *word <= 'Z')
+    {
+      *word = *word + ('a' - 'A');
+    }
+    // printf("%c", *word);
+    // Base Case: Tree is empty
+    if (!(*root))
+    {
+      *root = initTst(*word, numberPages);
+    }
 
-  // If current character of word is smaller than root's character,
-  // then insert this word in left subtree of root
-  printf("%p ", (*root));
+    // If current character of word is smaller than root's character,
+    // then insert this word in left subtree of root
+    //printf("%p ", (*root));
 
-  if ((*word) < (*root)->letter)
-    insert(&((*root)->left), word, numberPages, page);
+    if ((*word) < (*root)->letter)
 
-  // If current character of word is greater than root's character,
-  // then insert this word in right subtree of root
-  else if ((*word) > (*root)->letter)
-    insert(&((*root)->right), word, numberPages, page);
+      insert(&((*root)->left), word, numberPages, page);
 
-  // If current character of word is same as root's character,
-  else
-  {
-    if (*(word + 1))
-      insert(&((*root)->mid), word + 1, numberPages, page);
+    // If current character of word is greater than root's character,
+    // then insert this word in right subtree of root
+    else if ((*word) > (*root)->letter)
+      insert(&((*root)->right), word, numberPages, page);
 
-    // the last character of the word
+    // If current character of word is same as root's character,
     else
     {
-      (*root)->isEndOfString = 1;
-      (*root)->pages[(*root)->indexPage] = page;
-      (*root)->indexPage++;
+      if (*(word + 1))
+        insert(&((*root)->mid), word + 1, numberPages, page);
+
+      // the last character of the word
+      else
+      {
+        (*root)->isEndOfString = 1;
+        (*root)->pages[(*root)->indexPage] = page;
+        (*root)->indexPage++;
+      }
     }
   }
 }

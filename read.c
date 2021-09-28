@@ -112,12 +112,16 @@ Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords
     char word[MAX_WORD_SIZE];
 
     printf("---- %s -----\n", getPageName(pages[i]));
-    while (EOF != fscanf(file, "%s ", word))
+    int countdebug = 0;
+    while (EOF != fscanf(file, "%s", word))
     {
-      toLowerCase(word);
+      countdebug++;
+      // printf("%d--%d ", i, countdebug);
+      toLowerCase(word); //! TÔ DEBUGANDO AQUI
       if (!isStopWord(word, stopWords, numStopWords))
         insert(&tst, word, numberPages, pages[i]);
     }
+    countdebug = 0;
     fclose(file);
   }
   return tst;
@@ -134,11 +138,14 @@ int isStopWord(char *word, char **stopWords, int numStopWords)
 
 void toLowerCase(char *word)
 {
-  // while (*word)
-  // {
-  //   *word = tolower((unsigned char)*word);
-  //   word++;
-  // }
+  if (*word >= 'A' && *word <= 'Z')
+  {
+    while (*word != '\0')
+    {
+      *word = tolower((unsigned char)*word);
+      word++;
+    }
+  }
 }
 
 void getSearchWords(int numberPages, Page **pages, Tst *tst)
