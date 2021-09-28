@@ -40,6 +40,8 @@ void insert(Tst **root, char *word, int numberPages, Page *page)
 
   // If current character of word is smaller than root's character,
   // then insert this word in left subtree of root
+  printf("%p ", (*root));
+
   if ((*word) < (*root)->letter)
     insert(&((*root)->left), word, numberPages, page);
 
@@ -127,7 +129,8 @@ Page **searchTST(Tst *root, char *word)
 
 void destroyTST(Tst *root)
 {
-  if(root){
+  if (root)
+  {
     free(root->pages);
     destroyTST(root->left);
     destroyTST(root->mid);
