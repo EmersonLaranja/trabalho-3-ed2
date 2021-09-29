@@ -1,11 +1,12 @@
 #include "tst.h"
 #define MAX 50
-
+#include "endOfWord.h"
 // A Tst of ternary search tree
 struct tst
 {
-  char letter;
-  Page **pages;
+  unsigned char letter;
+  EndOfWord *eow;
+  // Page **pages;
   // True if this character is last character of one of the words
   unsigned isEndOfString;
   Tst *left, *mid, *right;
@@ -18,13 +19,16 @@ Tst *initTst(char letter, int numberPages)
   Tst *newTst = (Tst *)malloc(sizeof(Tst));
   newTst->letter = letter;
   newTst->isEndOfString = 0;
-  newTst->left = newTst->mid = newTst->right = NULL;
-  newTst->pages = (Page **)malloc(sizeof(Page *) * numberPages);
-  newTst->indexPage = 0;
-  for (int i = 0; i < numberPages; i++)
-  {
-    newTst->pages[i] = NULL;
-  }
+  newTst->left = NULL;
+  newTst->mid = NULL;
+  newTst->right = NULL;
+  newTst->eow = initEOW(numberPages);
+  //newTst->pages = (Page **)malloc(sizeof(Page *) * numberPages * 100);
+  //newTst->indexPage = 0;
+  // for (int i = 0; i < numberPages; i++)
+  // {
+  //   newTst->pages[i] = NULL;
+  // }
 
   return newTst;
 }
@@ -32,45 +36,43 @@ Tst *initTst(char letter, int numberPages)
 // Function to insert a new word in a Ternary Search Tree
 void insert(Tst **root, char *word, int numberPages, Page *page)
 {
-  if (*word >= 'A' && *word <= 'Z' || *word >= 'a' && *word <= 'z' || *word >= '0' && *word <= '9' || '-')
+  if (*word >= 'A' && *word <= 'Z')
   {
-    if (*word >= 'A' && *word <= 'Z')
-    {
-      *word = *word + ('a' - 'A');
-    }
-    // printf("%c", *word);
-    // Base Case: Tree is empty
-    if (!(*root))
-    {
-      *root = initTst(*word, numberPages);
-    }
+    *word = *word + ('a' - 'A');
+  }
+  // Base Case: Tree is empty
+  if (!(*root))
+  {
+    *root = initTst(*word, numberPages);
+  }
 
-    // If current character of word is smaller than root's character,
-    // then insert this word in left subtree of root
-    //printf("%p ", (*root));
+  // If current character of word is smaller than root's character,
+  // then insert this word in left subtree of root
+  //printf("%p ", (*root));
 
-    if ((*word) < (*root)->letter)
+  if ((*word) < (*root)->letter)
+    insert(&((*root)->left), word, numberPages, page);
 
-      insert(&((*root)->left), word, numberPages, page);
+  // If current character of word is greater than root's character,
+  // then insert this word in right subtree of root
+  else if ((*word) > (*root)->letter)
+    insert(&((*root)->right), word, numberPages, page);
 
-    // If current character of word is greater than root's character,
-    // then insert this word in right subtree of root
-    else if ((*word) > (*root)->letter)
-      insert(&((*root)->right), word, numberPages, page);
+  // If current character of word is same as root's character,
+  else
+  {
+    if (*(word + 1))
+      insert(&((*root)->mid), word + 1, numberPages, page);
 
-    // If current character of word is same as root's character,
+    //   // the last character of the word
     else
     {
-      if (*(word + 1))
-        insert(&((*root)->mid), word + 1, numberPages, page);
 
-      // the last character of the word
-      else
-      {
-        (*root)->isEndOfString = 1;
-        (*root)->pages[(*root)->indexPage] = page;
-        (*root)->indexPage++;
-      }
+      (*root)->isEndOfString = 1;
+      //(*root)->pages[(*root)->indexPage] = page;
+      //(*root)->indexPage++;
+      addPageEOW((*root)->eow, page);
+      // printf("%d ", (*root)->indexPage++);
     }
   }
 }
@@ -127,7 +129,7 @@ Page **searchTST(Tst *root, char *word)
     {
       if (root->isEndOfString == 1)
       {
-        return root->pages;
+        return getPagesEOW(root->eow);
       }
       return NULL;
     }
@@ -140,7 +142,8 @@ void destroyTST(Tst *root)
 {
   if (root)
   {
-    free(root->pages);
+    //free(root->pages);
+    destroyEOW(root->eow);
     destroyTST(root->left);
     destroyTST(root->mid);
     destroyTST(root->right);

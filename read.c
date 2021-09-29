@@ -111,13 +111,14 @@ Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords
     }
     char word[MAX_WORD_SIZE];
 
-    printf("---- %s -----\n", getPageName(pages[i]));
+    // printf("---- %s -----\n", getPageName(pages[i]));
     int countdebug = 0;
     while (EOF != fscanf(file, "%s", word))
     {
       countdebug++;
       // printf("%d--%d ", i, countdebug);
       toLowerCase(word); //! TÔ DEBUGANDO AQUI
+      printf("%s ", word);
       if (!isStopWord(word, stopWords, numStopWords))
         insert(&tst, word, numberPages, pages[i]);
     }
@@ -138,14 +139,15 @@ int isStopWord(char *word, char **stopWords, int numStopWords)
 
 void toLowerCase(char *word)
 {
+  int i = 0;
   if (*word >= 'A' && *word <= 'Z')
-  {
     while (*word != '\0')
     {
-      *word = tolower((unsigned char)*word);
+      {
+        *word = tolower((unsigned char)*word);
+      }
       word++;
     }
-  }
 }
 
 void getSearchWords(int numberPages, Page **pages, Tst *tst)
@@ -168,6 +170,7 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
   // Enquanto ha linhas no arquivo de entrada
   while (getline(&line, &len, file) > 0)
   {
+    numSearchWord = 0;
     //Retira o caracter \n
     char *pos;
     if ((pos = strchr(line, '\n')) != NULL)

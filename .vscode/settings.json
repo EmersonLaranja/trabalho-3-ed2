@@ -2,6 +2,7 @@
   "files.associations": {
     ".env": "dotenv",
     "read.h": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "pagerank.h": "c"
   }
 }
