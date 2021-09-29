@@ -4,9 +4,9 @@
 // A Tst of ternary search tree
 struct tst
 {
+  // EndOfWord *eow;
+  Page **pages;
   unsigned char letter;
-  EndOfWord *eow;
-  // Page **pages;
   // True if this character is last character of one of the words
   unsigned isEndOfString;
   Tst *left, *mid, *right;
@@ -22,13 +22,13 @@ Tst *initTst(char letter, int numberPages)
   newTst->left = NULL;
   newTst->mid = NULL;
   newTst->right = NULL;
-  newTst->eow = initEOW(numberPages);
-  //newTst->pages = (Page **)malloc(sizeof(Page *) * numberPages * 100);
-  //newTst->indexPage = 0;
-  // for (int i = 0; i < numberPages; i++)
-  // {
-  //   newTst->pages[i] = NULL;
-  // }
+  // newTst->eow = initEOW(numberPages);
+  newTst->pages = (Page **)malloc(sizeof(Page *) * numberPages);
+  newTst->indexPage = 0;
+  for (int i = 0; i < numberPages; i++)
+  {
+    newTst->pages[i] = NULL;
+  }
 
   return newTst;
 }
@@ -69,9 +69,15 @@ void insert(Tst **root, char *word, int numberPages, Page *page)
     {
 
       (*root)->isEndOfString = 1;
-      //(*root)->pages[(*root)->indexPage] = page;
-      //(*root)->indexPage++;
-      addPageEOW((*root)->eow, page);
+      for (int i = 0; i < (*root)->indexPage; i++)
+      {
+        if (!strcmp(getPageName(page), getPageName((*root)->pages[i])))
+          return;
+      }
+      (*root)->pages[(*root)->indexPage] = page;
+      (*root)->indexPage++;
+
+      // addPageEOW((*root)->eow, page);
       // printf("%d ", (*root)->indexPage++);
     }
   }
@@ -92,7 +98,7 @@ void traverseTSTUtil(Tst *root, char *buffer, int depth)
     if (root->isEndOfString)
     {
       buffer[depth + 1] = '\0';
-      printf("%s\n", buffer);
+      // printf("%s\n", buffer);
     }
 
     // Traverse the subtree using equal pointer (middle subtree)
@@ -129,7 +135,8 @@ Page **searchTST(Tst *root, char *word)
     {
       if (root->isEndOfString == 1)
       {
-        return getPagesEOW(root->eow);
+        return root->pages;
+        //return getPagesEOW(root->eow);
       }
       return NULL;
     }
@@ -142,8 +149,8 @@ void destroyTST(Tst *root)
 {
   if (root)
   {
-    //free(root->pages);
-    destroyEOW(root->eow);
+    free(root->pages);
+    // destroyEOW(root->eow);
     destroyTST(root->left);
     destroyTST(root->mid);
     destroyTST(root->right);

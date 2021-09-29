@@ -5,6 +5,7 @@ struct endOfWord
 {
   int index;
   Page **pages;
+  int maxPages;
 };
 
 EndOfWord *initEOW(int maxPages)
@@ -12,6 +13,7 @@ EndOfWord *initEOW(int maxPages)
   EndOfWord *eow = (EndOfWord *)malloc(sizeof(EndOfWord));
   eow->index = 0;
   eow->pages = malloc(maxPages * sizeof(EndOfWord));
+  eow->maxPages =maxPages;
 
   for (int i = 0; i < maxPages; i++)
   {
@@ -29,6 +31,7 @@ void addPageEOW(EndOfWord *eow, Page *page)
       return;
   }
   eow->pages[eow->index] = page;
+  if(eow->index+1!=eow->maxPages)
   eow->index++;
 }
 

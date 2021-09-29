@@ -74,6 +74,16 @@ void readLinksOut(FILE *file, Page **pages, int numberPages)
   }
 }
 
+// int compareWord(const void *a, const void *b)
+// {
+//   if (strcmp((*(char **)a), (*(char **)b) == 1))
+//     return -1;
+//   else if (strcmp((*(char **)a), (*(char **)b)) == -1)
+//     return 1;
+
+//   return 0;
+// }
+
 char **getStopWords(FILE *file, int *numberStopWords)
 {
   char stopWord[300];
@@ -118,7 +128,6 @@ Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords
       countdebug++;
       // printf("%d--%d ", i, countdebug);
       toLowerCase(word); //! TÔ DEBUGANDO AQUI
-      printf("%s ", word);
       if (!isStopWord(word, stopWords, numStopWords))
         insert(&tst, word, numberPages, pages[i]);
     }
@@ -152,7 +161,7 @@ void toLowerCase(char *word)
 
 void getSearchWords(int numberPages, Page **pages, Tst *tst)
 {
-  FILE *file = fopen("searches.txt", "r");
+  FILE *file = fopen("./input/searches.txt", "r");
   if (file == NULL)
   {
     printf("ERRO: falha na abertura do arquivo searches.txt\n");
@@ -199,8 +208,8 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
           weightId[id]++;
         }
       }
-
       printf("%s ", word);
+
       word = strtok(NULL, token);
 
       numSearchWord++;
@@ -230,7 +239,7 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
 
     for (int i = 0; i < numResult; i++)
     {
-      printf("%lf ", getPageRank(results[i]));
+      printf("%.18lf ", getPageRank(results[i]));
     }
     printf("\n");
     free(results);

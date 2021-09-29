@@ -83,14 +83,14 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
 
 void printPage(Page *page)
 {
- // printf("%d %s (%lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
- 
- printf("%s ",page->name);
+  // printf("%d %s (%.18lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
+
+  printf("%s ", page->name);
 }
 
 void printCompletePage(Page *page)
 {
-  printf("\n----%d %s (rank: %lf) -----\n", page->id, page->name, page->rank);
+  printf("\n----%d %s (rank: %.18lf) -----\n", page->id, page->name, page->rank);
   printf("Links Out:\n");
   for (int i = 0; i < page->numLinksOut; i++)
   {
@@ -182,7 +182,7 @@ void setPageId(Page *page, int id)
   if (page)
     page->id = id;
 }
-void setPageRank(Page *page, double rank )
+void setPageRank(Page *page, double rank)
 {
   if (page)
     page->rank = rank;
@@ -190,15 +190,16 @@ void setPageRank(Page *page, double rank )
 
 int comparePages(const void *a, const void *b)
 {
-    // Same PageRank values, comparing indices->
-    if ((*(Page **)a)->rank > (*(Page **)b)->rank)
-      return -1;
-    else if ((*(Page **)a)->rank < (*(Page **)b)->rank)
-          return 1;
+  // Same PageRank values, comparing indices->
+  if ((*(Page **)a)->rank > (*(Page **)b)->rank)
+    return -1;
+  else if ((*(Page **)a)->rank < (*(Page **)b)->rank)
+    return 1;
 
-    return 0;
+  return 0;
 }
 
-void sortPage(Page** pages, int numPages){
-   qsort(pages, numPages, sizeof(Page *), comparePages);
+void sortPage(Page **pages, int numPages)
+{
+  qsort(pages, numPages, sizeof(Page *), comparePages);
 }
