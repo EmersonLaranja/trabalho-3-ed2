@@ -1,7 +1,5 @@
 #include "read.h"
 
-#define MAX_WORD_SIZE 500
-
 void verifyArgsLength(int numArgs)
 {
   if (numArgs < 2)
@@ -92,13 +90,19 @@ char **getStopWords(FILE *file, int *numberStopWords)
   return stopWords;
 }
 
-Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords, Tst *tst)
+Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords, Tst *tst, char *basePath)
 {
+
+  char path[MAX_WORD_SIZE];
+  strcpy(path, basePath);
+  strcat(path, "pages/");
+
   for (int i = 0; i < numberPages; i++)
   {
-    char path[MAX_WORD_SIZE] = "./input/pages/";
-    FILE *file = fopen(strcat(path, getPageName(pages[i])), "r");
-    verifyFileWasOpened(file, strcat(path, getPageName(pages[i])));
+    char *pagePath = getCompletePath(path, getPageName(pages[i]));
+
+    FILE *file = fopen(pagePath, "r");
+    verifyFileWasOpened(file, pagePath);
     char word[MAX_WORD_SIZE];
 
     while (EOF != fscanf(file, "%s", word))
@@ -137,13 +141,17 @@ void toLowerCase(char *word)
     }
 }
 
-void getSearchWords(int numberPages, Page **pages, Tst *tst)
+void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
 {
-  FILE *file = fopen("./input/searches.txt", "r");   //! REMOVE PATH
-  verifyFileWasOpened(file, "./input/searches.txt"); //! REMOVE PATH
+  char *path;
 
-  FILE *fileOut = fopen("saida.txt", "w");
-  verifyFileWasOpened(file, "saida.txt");
+  path = getCompletePath(basePath, "/searches.txt");
+  FILE *file = fopen(path, "r");
+  verifyFileWasOpened(file, path);
+
+  path = getCompletePath(basePath, "/saida.txt");
+  FILE *fileOut = fopen(path, "w");
+  verifyFileWasOpened(file, path);
 
   size_t len = 300;
   char *line = (char *)malloc(sizeof(char) * len);
@@ -228,4 +236,12 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
   free(line);
   fclose(file);
   fclose(fileOut);
+}
+
+char *getCompletePath(char *basePath, char *fileName)
+{
+  char *path = (char *)malloc(sizeof(char) * MAX_WORD_SIZE);
+  strcpy(path, basePath);
+  strcat(path, fileName);
+  return path;
 }

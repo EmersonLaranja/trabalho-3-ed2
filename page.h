@@ -9,7 +9,6 @@
 typedef struct page Page;
 
 Page *initPage(char *name, int id);
-Page *destroyPage(Page *);
 char *getPageName(Page *page);
 int getNumberLinksIn(Page *page);
 int getNumberLinksOut(Page *page);
@@ -23,5 +22,7 @@ void setPageId(Page *page, int id);
 Page *getLinkOutPage(Page *page, int index);
 void setPageRank(Page *page, double rank);
 Page *getPageById(Page **pages, int numPages, int id);
+Page *destroyPage(Page *);
+void destroyPageArray(Page **pages, int numberPages);
 
 #endif

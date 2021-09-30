@@ -6,8 +6,12 @@
 int main(int argc, char const *argv[])
 {
 
-  FILE *fileIn = fopen(argv[1], "r");
-  verifyFileWasOpened(fileIn, argv[1]);
+  char *basePath = strdup(argv[1]);
+
+  char *path;
+  path = getCompletePath(basePath, "/index.txt");
+  FILE *fileIn = fopen(path, "r");
+  verifyFileWasOpened(fileIn, path);
 
   int numberPages = 0;
   Page **pages = getPages(fileIn, &numberPages);
@@ -15,36 +19,38 @@ int main(int argc, char const *argv[])
   char **stopWords;
   int numberStopWords = 0;
 
-  FILE *stopWordsFile = fopen("./input/stopwords.txt", "r");
-  verifyFileWasOpened(stopWordsFile, "./input/stopwords.txt");
+  path = getCompletePath(basePath, "/stopwords.txt");
+  FILE *stopWordsFile = fopen(path, "r");
+  verifyFileWasOpened(stopWordsFile, path);
 
   stopWords = getStopWords(stopWordsFile, &numberStopWords);
 
-  FILE *graphFile = fopen("./input/graph.txt", "r");
-  verifyFileWasOpened(graphFile, "./input/graph.txt");
+  path = getCompletePath(basePath, "/graph.txt");
+  FILE *graphFile = fopen(path, "r");
+  verifyFileWasOpened(graphFile, path);
   readLinksOut(graphFile, pages, numberPages);
 
   for (int i = 0; i < numberPages; i++)
     setPageLinksIn(pages[i], pages, numberPages);
 
   Tst *tst = NULL;
-  tst = readPages(pages, numberPages, stopWords, numberStopWords, tst);
+  tst = readPages(pages, numberPages, stopWords, numberStopWords, tst, basePath);
 
   pageRank(pages, numberPages);
 
-  getSearchWords(numberPages, pages, tst);
+  getSearchWords(basePath, numberPages, pages, tst);
 
   //-----------------Liberando a memória--------------------------
-
-  for (int i = 0; i < numberPages; i++)
-    destroyPage(pages[i]);
 
   for (int i = 0; i < numberStopWords; i++)
     free(stopWords[i]);
 
+  destroyPageArray(pages, numberPages);
   destroyTST(tst);
   free(pages);
   free(stopWords);
+  free(path);
+
   fclose(stopWordsFile);
   fclose(fileIn);
   fclose(graphFile);

@@ -102,6 +102,12 @@ Page *destroyPage(Page *page)
   }
 };
 
+void destroyPageArray(Page **pages, int numberPages)
+{
+  for (int i = 0; i < numberPages; i++)
+    destroyPage(pages[i]);
+}
+
 char *getPageName(Page *page)
 {
   if (page)
