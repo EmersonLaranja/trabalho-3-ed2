@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "read.h"
 #include "pageRank.h"
 #include "tst.h"
@@ -8,8 +5,9 @@
 
 int main(int argc, char const *argv[])
 {
+
   FILE *fileIn = fopen(argv[1], "r");
-  verifyFileWasOpened(fileIn);
+  verifyFileWasOpened(fileIn, argv[1]);
 
   int numberPages = 0;
   Page **pages = getPages(fileIn, &numberPages);
@@ -18,12 +16,12 @@ int main(int argc, char const *argv[])
   int numberStopWords = 0;
 
   FILE *stopWordsFile = fopen("./input/stopwords.txt", "r");
-  verifyFileWasOpened(stopWordsFile);
+  verifyFileWasOpened(stopWordsFile, "./input/stopwords.txt");
 
   stopWords = getStopWords(stopWordsFile, &numberStopWords);
 
-  //Ler graph.txt
   FILE *graphFile = fopen("./input/graph.txt", "r");
+  verifyFileWasOpened(graphFile, "./input/graph.txt");
   readLinksOut(graphFile, pages, numberPages);
 
   for (int i = 0; i < numberPages; i++)
@@ -36,8 +34,8 @@ int main(int argc, char const *argv[])
 
   getSearchWords(numberPages, pages, tst);
 
-  //-------------------------------------------
-  //Libera a memória
+  //-----------------Liberando a memória--------------------------
+
   for (int i = 0; i < numberPages; i++)
     destroyPage(pages[i]);
 
@@ -50,6 +48,6 @@ int main(int argc, char const *argv[])
   fclose(stopWordsFile);
   fclose(fileIn);
   fclose(graphFile);
-  
+
   return 0;
 }

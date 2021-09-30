@@ -1,23 +1,19 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-#include "page.h"
+
 #include "pageRank.h"
+#define CONST_VALUE 0.0000000001
+#define ALPHA 0.85
 struct pagerank
 {
-
   double value;
   int pageId;
   double oldValue;
 
-  // Output pages number, input pages array and input pages number.
-  int n_out;
+  int nOut;
+  int nIn;
   int *in;
-  int n_in;
 };
 
-int E(PageRank **pages, int N)
+int finishedCalculation(PageRank **pages, int N)
 {
   // Indicates if calculation is finished.
   double sum = 0;
@@ -28,40 +24,33 @@ int E(PageRank **pages, int N)
     double value = pages[i]->value;
 
     sum += (value - old) * (value - old);
-    //sum += (pages[i]->value - pages[i]->oldValue) * (pages[i]->value - pages[i]->oldValue);
   }
 
-  if (sqrt(sum) < 0.0000000001)
-    return 1; // Yes.
+  if (sqrt(sum) < CONST_VALUE)
+    return 1; // Yes
   else
-    return 0; // No.
+    return 0; // No
 }
 
-double summation(PageRank **pages, int id)
+double sumOperation(PageRank **pages, int id)
 {
-  // Calculates summation of values.
-
   double sum = 0;
   int i = 0;
 
-  // Using Input pages to calculate summation.
-  for (i = 0; i < pages[id]->n_in; i++)
+  for (i = 0; i < pages[id]->nIn; i++)
   {
-
     int inputId = pages[id]->in[i];
-    sum += (pages[inputId]->oldValue) / ((double)pages[inputId]->n_out);
+    sum += (pages[inputId]->oldValue) / ((double)pages[inputId]->nOut);
   }
+
   return sum;
 }
 
 void pageRank(Page **allPages, int numPages)
 {
 
-  // Number of pages, pages array and alocate status check.
   int n_pages = numPages;
   PageRank **pages = (PageRank **)malloc(sizeof(PageRank *) * n_pages);
-
-  // Initializing pages, giving them id "i".
 
   for (int i = 0; i < n_pages; i++)
   {
@@ -76,7 +65,7 @@ void pageRank(Page **allPages, int numPages)
 
     int numLinks = getNumberLinksIn(allPages[i]);
 
-    pages[i]->n_in = numLinks;
+    pages[i]->nIn = numLinks;
     pages[i]->in = (int *)malloc(sizeof(int) * numLinks);
 
     for (int j = 0; j < numLinks; j++)
@@ -84,39 +73,34 @@ void pageRank(Page **allPages, int numPages)
       pages[i]->in[j] = getPageId(getLinkInPage(allPages[i], j));
     }
 
-    pages[i]->n_out = getNumberLinksOut(allPages[i]);
+    pages[i]->nOut = getNumberLinksOut(allPages[i]);
   }
 
-  // Calculating PageRank.
   int finished = 0;
 
-  // Contants to use in calculation.
-  double constOne = (1 - 0.85) / (double)n_pages;
-  double constTwo = 0.85;
+  double constOne = (1 - ALPHA) / (double)n_pages;
+  double constTwo = ALPHA;
 
   while (finished == 0)
-  { //While E(k) > ε
+  {
 
     for (int i = 0; i < n_pages; i++)
     {
-      // Pages WITHOUT output pages (n_out == 0).
-      if (pages[i]->n_out == 0)
+      if (pages[i]->nOut == 0)
       {
         double temp = pages[i]->value;
-        pages[i]->value = constOne + constTwo * pages[i]->oldValue + constTwo * summation(pages, i);
+        pages[i]->value = constOne + constTwo * pages[i]->oldValue + constTwo * sumOperation(pages, i);
         pages[i]->oldValue = temp;
       }
       else
       {
-        // Pages WITH output pages.
         double temp = pages[i]->value;
-        pages[i]->value = constOne + constTwo * summation(pages, i);
+        pages[i]->value = constOne + constTwo * sumOperation(pages, i);
         pages[i]->oldValue = temp;
       }
     }
 
-    //Finishes if E(k) < ε.
-    if (E(pages, n_pages) == 1)
+    if (finishedCalculation(pages, n_pages) == 1)
       finished = 1;
   }
 

@@ -1,13 +1,10 @@
 #include "tst.h"
 #define MAX 50
-#include "endOfWord.h"
-// A Tst of ternary search tree
+
 struct tst
 {
-  // EndOfWord *eow;
   Page **pages;
   unsigned char letter;
-  // True if this character is last character of one of the words
   unsigned isEndOfString;
   Tst *left, *mid, *right;
   int indexPage;
@@ -22,7 +19,6 @@ Tst *initTst(char letter, int numberPages)
   newTst->left = NULL;
   newTst->mid = NULL;
   newTst->right = NULL;
-  // newTst->eow = initEOW(numberPages);
   newTst->pages = (Page **)malloc(sizeof(Page *) * numberPages);
   newTst->indexPage = 0;
   for (int i = 0; i < numberPages; i++)
@@ -40,31 +36,20 @@ void insert(Tst **root, char *word, int numberPages, Page *page)
   {
     *word = *word + ('a' - 'A');
   }
-  // Base Case: Tree is empty
+
   if (!(*root))
   {
     *root = initTst(*word, numberPages);
   }
 
-  // If current character of word is smaller than root's character,
-  // then insert this word in left subtree of root
-  //printf("%p ", (*root));
-
   if ((*word) < (*root)->letter)
     insert(&((*root)->left), word, numberPages, page);
-
-  // If current character of word is greater than root's character,
-  // then insert this word in right subtree of root
   else if ((*word) > (*root)->letter)
     insert(&((*root)->right), word, numberPages, page);
-
-  // If current character of word is same as root's character,
   else
   {
     if (*(word + 1))
       insert(&((*root)->mid), word + 1, numberPages, page);
-
-    //   // the last character of the word
     else
     {
 
@@ -76,9 +61,6 @@ void insert(Tst **root, char *word, int numberPages, Page *page)
       }
       (*root)->pages[(*root)->indexPage] = page;
       (*root)->indexPage++;
-
-      // addPageEOW((*root)->eow, page);
-      // printf("%d ", (*root)->indexPage++);
     }
   }
 }
@@ -98,7 +80,6 @@ void traverseTSTUtil(Tst *root, char *buffer, int depth)
     if (root->isEndOfString)
     {
       buffer[depth + 1] = '\0';
-      // printf("%s\n", buffer);
     }
 
     // Traverse the subtree using equal pointer (middle subtree)
@@ -125,10 +106,8 @@ Page **searchTST(Tst *root, char *word)
 
   if (*word < (root)->letter)
     return searchTST(root->left, word);
-
   else if (*word > (root)->letter)
     return searchTST(root->right, word);
-
   else
   {
     if (*(word + 1) == '\0')
@@ -136,7 +115,6 @@ Page **searchTST(Tst *root, char *word)
       if (root->isEndOfString == 1)
       {
         return root->pages;
-        //return getPagesEOW(root->eow);
       }
       return NULL;
     }
@@ -150,7 +128,6 @@ void destroyTST(Tst *root)
   if (root)
   {
     free(root->pages);
-    // destroyEOW(root->eow);
     destroyTST(root->left);
     destroyTST(root->mid);
     destroyTST(root->right);

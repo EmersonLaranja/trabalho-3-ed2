@@ -1,8 +1,7 @@
 #include "read.h"
-#include "pageRank.h"
-#include <stdbool.h>
-#include "string.h"
-#define MAX_WORD_SIZE 50
+
+#define MAX_WORD_SIZE 500
+
 void verifyArgsLength(int numArgs)
 {
   if (numArgs < 2)
@@ -11,11 +10,11 @@ void verifyArgsLength(int numArgs)
     exit(1);
   }
 }
-void verifyFileWasOpened(FILE *file)
+void verifyFileWasOpened(FILE *file, const char *fileName)
 {
   if (file == NULL)
   {
-    printf("ERRO: falha na abertura do arquivo de entrada\n");
+    printf("ERRO: falha na abertura do arquivo %s\n", fileName);
     exit(1);
   }
 }
@@ -24,8 +23,6 @@ Page **getPages(FILE *file, int *numberPages)
 {
 
   char pageName[300];
-
-  //TENTAR DEPOIS COM GETLINE
 
   while (fscanf(file, "%s", pageName) != EOF)
   {
@@ -74,21 +71,9 @@ void readLinksOut(FILE *file, Page **pages, int numberPages)
   }
 }
 
-// int compareWord(const void *a, const void *b)
-// {
-//   if (strcmp((*(char **)a), (*(char **)b) == 1))
-//     return -1;
-//   else if (strcmp((*(char **)a), (*(char **)b)) == -1)
-//     return 1;
-
-//   return 0;
-// }
-
 char **getStopWords(FILE *file, int *numberStopWords)
 {
   char stopWord[300];
-
-  //TENTAR DEPOIS COM GETLINE
 
   while (fscanf(file, "%s", stopWord) != EOF)
   {
@@ -97,7 +82,6 @@ char **getStopWords(FILE *file, int *numberStopWords)
 
   rewind(file);
 
-  //Alocar a lista de stopWords;
   char **stopWords = (char **)malloc(*numberStopWords * sizeof(char *));
 
   for (int i = 0; fscanf(file, "%s", stopWord) != EOF; i++)
@@ -114,24 +98,18 @@ Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords
   {
     char path[MAX_WORD_SIZE] = "./input/pages/";
     FILE *file = fopen(strcat(path, getPageName(pages[i])), "r");
-    if (file == NULL)
-    {
-      printf("ERRO: falha na abertura do arquivo da pagina %s\n", getPageName(pages[i]));
-      exit(1);
-    }
+    verifyFileWasOpened(file, strcat(path, getPageName(pages[i])));
     char word[MAX_WORD_SIZE];
 
-    // printf("---- %s -----\n", getPageName(pages[i]));
-    int countdebug = 0;
     while (EOF != fscanf(file, "%s", word))
     {
-      countdebug++;
-      // printf("%d--%d ", i, countdebug);
-      toLowerCase(word); //! TÔ DEBUGANDO AQUI
+      toLowerCase(word);
       if (!isStopWord(word, stopWords, numStopWords))
+      {
         insert(&tst, word, numberPages, pages[i]);
+      }
     }
-    countdebug = 0;
+
     fclose(file);
   }
   return tst;
@@ -161,12 +139,11 @@ void toLowerCase(char *word)
 
 void getSearchWords(int numberPages, Page **pages, Tst *tst)
 {
-  FILE *file = fopen("./input/searches.txt", "r");
-  if (file == NULL)
-  {
-    printf("ERRO: falha na abertura do arquivo searches.txt\n");
-    exit(1);
-  }
+  FILE *file = fopen("./input/searches.txt", "r");   //! REMOVE PATH
+  verifyFileWasOpened(file, "./input/searches.txt"); //! REMOVE PATH
+
+  FILE *fileOut = fopen("saida.txt", "w");
+  verifyFileWasOpened(file, "saida.txt");
 
   size_t len = 300;
   char *line = (char *)malloc(sizeof(char) * len);
@@ -182,13 +159,14 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
     numSearchWord = 0;
     //Retira o caracter \n
     char *pos;
+
     if ((pos = strchr(line, '\n')) != NULL)
       *pos = '\0';
 
     for (int i = 0; i < numberPages; i++)
       weightId[i] = 0;
 
-    printf("search:");
+    fprintf(fileOut, "search:");
     int resultsId[numberPages];
     word = strtok(line, token);
 
@@ -208,7 +186,8 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
           weightId[id]++;
         }
       }
-      printf("%s ", word);
+
+      fprintf(fileOut, "%s ", word);
 
       word = strtok(NULL, token);
 
@@ -217,6 +196,7 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
 
     results = (Page **)malloc((numberPages) * sizeof(Page *));
     int numResult = 0;
+
     //Retornar a lista unica
     for (int i = 0; i < numberPages; i++)
     {
@@ -229,22 +209,23 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
 
     sortPage(results, numResult);
 
-    printf("\npages:");
+    fprintf(fileOut, "\npages:");
     for (int i = 0; i < numResult; i++)
     {
-      printPage(results[i]);
+      fprintf(fileOut, "%s ", getPageName(results[i]));
     }
 
-    printf("\npr: ");
+    fprintf(fileOut, "\npr:");
 
     for (int i = 0; i < numResult; i++)
     {
-      printf("%.18lf ", getPageRank(results[i]));
+      fprintf(fileOut, "%.18lf ", getPageRank(results[i]));
     }
-    printf("\n");
+    fprintf(fileOut, "\n");
     free(results);
   }
 
   free(line);
   fclose(file);
+  fclose(fileOut);
 }

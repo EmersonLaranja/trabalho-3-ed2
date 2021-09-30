@@ -1,5 +1,4 @@
 #include "page.h"
-#include "string.h"
 
 struct page
 {
@@ -15,8 +14,6 @@ struct page
 Page *initPage(char *name, int id)
 {
   Page *page = (Page *)malloc(sizeof(Page));
-  // page->linksIn = (Page **)malloc(sizeof(Page *));
-  // page->linksOut = (Page **)malloc(sizeof(Page *));
   page->name = strdup(name);
   page->numLinksOut = 0;
   page->numLinksIn = 0;
@@ -31,14 +28,6 @@ void setPageLinksOut(Page *page, Page **links, int numLinks)
   page->linksOut = links;
 }
 
-void printPageLinksOut(Page *page)
-{
-  printf("%s %p Links Out (%d):\n", page->name, page, page->numLinksOut);
-  for (int i = 0; i < page->numLinksOut; i++)
-  {
-    printf(" > %s %p\n", (page->linksOut[i])->name, page->linksOut[i]);
-  }
-}
 void setPageLinksIn(Page *page, Page **pages, int numPages)
 {
 
@@ -47,7 +36,6 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
   Page *p, *link;
   char name[30];
 
-  //Conta a quantidade de links
   for (int i = 0; i < numPages; i++)
   {
     p = pages[i];
@@ -63,7 +51,7 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
   Page **links = (Page **)malloc(sizeof(Page *) * totalNumLinks);
 
   int linksAux = 0;
-  //Adiciona os links na lista
+
   for (int i = 0; i < numPages; i++)
   {
     p = pages[i];
@@ -76,32 +64,8 @@ void setPageLinksIn(Page *page, Page **pages, int numPages)
       }
   }
 
-  //Adiciona na struct
   page->numLinksIn = totalNumLinks;
   page->linksIn = links;
-}
-
-void printPage(Page *page)
-{
-  // printf("%d %s (%.18lf) - %d linksIn - %d linksOut\n", page->id, page->name, page->rank, page->numLinksIn, page->numLinksOut);
-
-  printf("%s ", page->name);
-}
-
-void printCompletePage(Page *page)
-{
-  printf("\n----%d %s (rank: %.18lf) -----\n", page->id, page->name, page->rank);
-  printf("Links Out:\n");
-  for (int i = 0; i < page->numLinksOut; i++)
-  {
-    printf("    > %s\n", (page->linksOut[i])->name);
-  }
-
-  printf("Links In:\n");
-  for (int i = 0; i < page->numLinksIn; i++)
-  {
-    printf("    < %s\n", (page->linksIn[i])->name);
-  }
 }
 
 Page *getPageByName(Page **pages, int numPages, char *name)
@@ -190,13 +154,16 @@ void setPageRank(Page *page, double rank)
 
 int comparePages(const void *a, const void *b)
 {
-  // Same PageRank values, comparing indices->
   if ((*(Page **)a)->rank > (*(Page **)b)->rank)
     return -1;
   else if ((*(Page **)a)->rank < (*(Page **)b)->rank)
     return 1;
-
-  return 0;
+  else
+  {
+    if (strcmp((*(Page **)a)->name, (*(Page **)b)->name) >= 1)
+      return 1;
+    return -1;
+  }
 }
 
 void sortPage(Page **pages, int numPages)
