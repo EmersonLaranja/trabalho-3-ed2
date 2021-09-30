@@ -17,6 +17,8 @@ Page *initPage(char *name, int id)
   page->name = strdup(name);
   page->numLinksOut = 0;
   page->numLinksIn = 0;
+  page->linksIn = NULL;
+  page->linksOut = NULL;
   page->id = id;
 
   return page;
@@ -106,6 +108,7 @@ void destroyPageArray(Page **pages, int numberPages)
 {
   for (int i = 0; i < numberPages; i++)
     destroyPage(pages[i]);
+  free(pages);
 }
 
 char *getPageName(Page *page)

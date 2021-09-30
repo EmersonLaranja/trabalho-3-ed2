@@ -8,10 +8,10 @@ int main(int argc, char const *argv[])
 
   char *basePath = strdup(argv[1]);
 
-  char *path;
-  path = getCompletePath(basePath, "/index.txt");
-  FILE *fileIn = fopen(path, "r");
-  verifyFileWasOpened(fileIn, path);
+  char *indexPath = getCompletePath(basePath, "/index.txt");
+
+  FILE *fileIn = fopen(indexPath, "r");
+  verifyFileWasOpened(fileIn, indexPath);
 
   int numberPages = 0;
   Page **pages = getPages(fileIn, &numberPages);
@@ -19,15 +19,16 @@ int main(int argc, char const *argv[])
   char **stopWords;
   int numberStopWords = 0;
 
-  path = getCompletePath(basePath, "/stopwords.txt");
-  FILE *stopWordsFile = fopen(path, "r");
-  verifyFileWasOpened(stopWordsFile, path);
+  char *stpwrdPath = getCompletePath(basePath, "/stopwords.txt");
+  FILE *stopWordsFile = fopen(stpwrdPath, "r");
+  verifyFileWasOpened(stopWordsFile, stpwrdPath);
 
   stopWords = getStopWords(stopWordsFile, &numberStopWords);
 
-  path = getCompletePath(basePath, "/graph.txt");
-  FILE *graphFile = fopen(path, "r");
-  verifyFileWasOpened(graphFile, path);
+  char *graphPath = getCompletePath(basePath, "/graph.txt");
+  FILE *graphFile = fopen(graphPath, "r");
+  verifyFileWasOpened(graphFile, graphPath);
+
   readLinksOut(graphFile, pages, numberPages);
 
   for (int i = 0; i < numberPages; i++)
@@ -44,13 +45,13 @@ int main(int argc, char const *argv[])
 
   for (int i = 0; i < numberStopWords; i++)
     free(stopWords[i]);
-
+  free(stopWords);
   destroyPageArray(pages, numberPages);
   destroyTST(tst);
-  free(pages);
-  free(stopWords);
-  free(path);
-
+  free(basePath);
+  free(indexPath);
+  free(stpwrdPath);
+  free(graphPath);
   fclose(stopWordsFile);
   fclose(fileIn);
   fclose(graphFile);
