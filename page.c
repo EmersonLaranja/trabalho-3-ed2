@@ -90,7 +90,7 @@ Page *getPageById(Page **pages, int numPages, int id)
   return NULL;
 }
 
-Page *destroyPage(Page *page)
+void destroyPage(Page *page)
 {
   if (page)
   {

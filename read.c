@@ -8,6 +8,7 @@ void verifyArgsLength(int numArgs)
     exit(1);
   }
 }
+
 void verifyFileWasOpened(FILE *file, const char *fileName)
 {
   if (file == NULL)

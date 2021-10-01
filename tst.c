@@ -10,7 +10,6 @@ struct tst
   int indexPage;
 };
 
-// A utility function to create a new ternary search tree Tst
 Tst *initTst(char letter, int numberPages)
 {
   Tst *newTst = (Tst *)malloc(sizeof(Tst));
@@ -29,7 +28,6 @@ Tst *initTst(char letter, int numberPages)
   return newTst;
 }
 
-// Function to insert a new word in a Ternary Search Tree
 void insert(Tst **root, char *word, int numberPages, Page *page)
 {
   if (*word >= 'A' && *word <= 'Z')
@@ -65,40 +63,36 @@ void insert(Tst **root, char *word, int numberPages, Page *page)
   }
 }
 
-// A recursive function to traverse Ternary Search Tree
 void traverseTSTUtil(Tst *root, char *buffer, int depth)
 {
 
   if (root)
   {
 
-    // First traverse the left subtree
+    // left subtree
     traverseTSTUtil(root->left, buffer, depth);
 
-    // Store the character of this Tst
+    // Store the character
     buffer[depth] = root->letter;
     if (root->isEndOfString)
     {
       buffer[depth + 1] = '\0';
     }
 
-    // Traverse the subtree using equal pointer (middle subtree)
+    // middle subtree
     traverseTSTUtil(root->mid, buffer, depth + 1);
 
-    // Finally Traverse the right subtree
+    //right subtree
     traverseTSTUtil(root->right, buffer, depth);
   }
 }
 
-// The main function to traverse a Ternary Search Tree.
-// It mainly uses traverseTSTUtil()
 void traverseTst(Tst *root)
 {
   char buffer[MAX];
   traverseTSTUtil(root, buffer, 0);
 }
 
-// Function to search a given word in TST
 Page **searchTST(Tst *root, char *word)
 {
   if (!root)
