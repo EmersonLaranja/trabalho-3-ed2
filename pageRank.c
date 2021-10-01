@@ -2,6 +2,7 @@
 #include "pageRank.h"
 #define CONST_VALUE 0.0000000001
 #define ALPHA 0.85
+
 struct pagerank
 {
   double value;
@@ -15,7 +16,6 @@ struct pagerank
 
 int finishedCalculation(PageRank **pages, int N)
 {
-  // Indicates if calculation is finished.
   double sum = 0;
   int i = 0;
   for (i = 0; i < N; i++)
