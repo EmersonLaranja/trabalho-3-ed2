@@ -3,6 +3,11 @@
     ".env": "dotenv",
     "read.h": "c",
     "type_traits": "c",
-    "pagerank.h": "c"
+    "pagerank.h": "c",
+    "page.h": "c",
+    "tst.h": "c",
+    "string.h": "c",
+    "stdbool.h": "c",
+    "stdio.h": "c"
   }
 }

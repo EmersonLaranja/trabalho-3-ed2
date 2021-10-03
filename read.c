@@ -1,8 +1,5 @@
 #include "read.h"
-#include "pageRank.h"
-#include <stdbool.h>
-#include "string.h"
-#define MAX_WORD_SIZE 50
+
 void verifyArgsLength(int numArgs)
 {
   if (numArgs < 2)
@@ -11,11 +8,12 @@ void verifyArgsLength(int numArgs)
     exit(1);
   }
 }
-void verifyFileWasOpened(FILE *file)
+
+void verifyFileWasOpened(FILE *file, const char *fileName)
 {
   if (file == NULL)
   {
-    printf("ERRO: falha na abertura do arquivo de entrada\n");
+    printf("ERRO: falha na abertura do arquivo %s\n", fileName);
     exit(1);
   }
 }
@@ -24,8 +22,6 @@ Page **getPages(FILE *file, int *numberPages)
 {
 
   char pageName[300];
-
-  //TENTAR DEPOIS COM GETLINE
 
   while (fscanf(file, "%s", pageName) != EOF)
   {
@@ -74,21 +70,9 @@ void readLinksOut(FILE *file, Page **pages, int numberPages)
   }
 }
 
-// int compareWord(const void *a, const void *b)
-// {
-//   if (strcmp((*(char **)a), (*(char **)b) == 1))
-//     return -1;
-//   else if (strcmp((*(char **)a), (*(char **)b)) == -1)
-//     return 1;
-
-//   return 0;
-// }
-
 char **getStopWords(FILE *file, int *numberStopWords)
 {
   char stopWord[300];
-
-  //TENTAR DEPOIS COM GETLINE
 
   while (fscanf(file, "%s", stopWord) != EOF)
   {
@@ -97,7 +81,6 @@ char **getStopWords(FILE *file, int *numberStopWords)
 
   rewind(file);
 
-  //Alocar a lista de stopWords;
   char **stopWords = (char **)malloc(*numberStopWords * sizeof(char *));
 
   for (int i = 0; fscanf(file, "%s", stopWord) != EOF; i++)
@@ -108,30 +91,30 @@ char **getStopWords(FILE *file, int *numberStopWords)
   return stopWords;
 }
 
-Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords, Tst *tst)
+Tst *readPages(Page **pages, int numberPages, char **stopWords, int numStopWords, Tst *tst, char *basePath)
 {
+
+  char path[MAX_WORD_SIZE];
+  strcpy(path, basePath);
+  strcat(path, "/pages/");
+
   for (int i = 0; i < numberPages; i++)
   {
-    char path[MAX_WORD_SIZE] = "./input/pages/";
-    FILE *file = fopen(strcat(path, getPageName(pages[i])), "r");
-    if (file == NULL)
-    {
-      printf("ERRO: falha na abertura do arquivo da pagina %s\n", getPageName(pages[i]));
-      exit(1);
-    }
+    char *pagePath = getCompletePath(path, getPageName(pages[i]));
+
+    FILE *file = fopen(pagePath, "r");
+    verifyFileWasOpened(file, pagePath);
     char word[MAX_WORD_SIZE];
 
-    // printf("---- %s -----\n", getPageName(pages[i]));
-    int countdebug = 0;
     while (EOF != fscanf(file, "%s", word))
     {
-      countdebug++;
-      // printf("%d--%d ", i, countdebug);
-      toLowerCase(word); //! TÔ DEBUGANDO AQUI
+      toLowerCase(word);
       if (!isStopWord(word, stopWords, numStopWords))
+      {
         insert(&tst, word, numberPages, pages[i]);
+      }
     }
-    countdebug = 0;
+    free(pagePath);
     fclose(file);
   }
   return tst;
@@ -159,14 +142,15 @@ void toLowerCase(char *word)
     }
 }
 
-void getSearchWords(int numberPages, Page **pages, Tst *tst)
+void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
 {
-  FILE *file = fopen("./input/searches.txt", "r");
-  if (file == NULL)
-  {
-    printf("ERRO: falha na abertura do arquivo searches.txt\n");
-    exit(1);
-  }
+  char *searchesPath = getCompletePath(basePath, "/searches.txt"); //entrada padrão e printa
+  FILE *file = fopen(searchesPath, "r");
+  verifyFileWasOpened(file, searchesPath);
+
+  char *outputPath = getCompletePath(basePath, "/saida.txt");
+  FILE *fileOut = fopen(outputPath, "w");
+  verifyFileWasOpened(file, outputPath);
 
   size_t len = 300;
   char *line = (char *)malloc(sizeof(char) * len);
@@ -177,18 +161,19 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
   Page **results, **pagesSearch;
 
   // Enquanto ha linhas no arquivo de entrada
-  while (getline(&line, &len, file) > 0)
+  while (getline(&line, &len, stdin) != -1)
   {
     numSearchWord = 0;
     //Retira o caracter \n
     char *pos;
+
     if ((pos = strchr(line, '\n')) != NULL)
       *pos = '\0';
 
     for (int i = 0; i < numberPages; i++)
       weightId[i] = 0;
 
-    printf("search:");
+    printf( "search:");
     int resultsId[numberPages];
     word = strtok(line, token);
 
@@ -206,45 +191,55 @@ void getSearchWords(int numberPages, Page **pages, Tst *tst)
           int id = getPageId(pagesSearch[i]);
 
           weightId[id]++;
+          word = strtok(NULL, token);
+
+          numSearchWord++;
+        };
+
+        results = (Page **)malloc((numberPages) * sizeof(Page *));
+        int numResult = 0;
+
+        //Retornar a lista unica
+        for (int i = 0; i < numberPages; i++)
+        {
+          if (weightId[i] == numSearchWord)
+          {
+            results[numResult] = getPageById(pages, numberPages, i);
+            numResult++;
+          }
         }
+
+        sortPage(results, numResult);
+
+        printf( "\npages:");
+        for (int i = 0; i < numResult; i++)
+        {
+          printf( "%s ", getPageName(results[i]));
+        }
+
+        printf( "\npr:");
+
+        for (int i = 0; i < numResult; i++)
+        {
+          printf( "%.18lf ", getPageRank(results[i]));
+        }
+        printf( "\n");
+        free(results);
       }
-      printf("%s ", word);
-
-      word = strtok(NULL, token);
-
-      numSearchWord++;
-    };
-
-    results = (Page **)malloc((numberPages) * sizeof(Page *));
-    int numResult = 0;
-    //Retornar a lista unica
-    for (int i = 0; i < numberPages; i++)
-    {
-      if (weightId[i] == numSearchWord)
-      {
-        results[numResult] = getPageById(pages, numberPages, i);
-        numResult++;
-      }
     }
-
-    sortPage(results, numResult);
-
-    printf("\npages:");
-    for (int i = 0; i < numResult; i++)
-    {
-      printPage(results[i]);
-    }
-
-    printf("\npr: ");
-
-    for (int i = 0; i < numResult; i++)
-    {
-      printf("%.18lf ", getPageRank(results[i]));
-    }
-    printf("\n");
-    free(results);
   }
 
   free(line);
   fclose(file);
+  fclose(fileOut);
+  free(searchesPath);
+  free(outputPath);
+}
+
+char *getCompletePath(char *basePath, char *fileName)
+{
+  char *path = (char *)malloc(sizeof(char) * MAX_WORD_SIZE);
+  strcpy(path, basePath);
+  strcat(path, fileName);
+  return path;
 }

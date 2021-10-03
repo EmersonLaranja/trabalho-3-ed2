@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "read.h"
 #include "pageRank.h"
 #include "tst.h"
@@ -8,8 +5,13 @@
 
 int main(int argc, char const *argv[])
 {
-  FILE *fileIn = fopen(argv[1], "r");
-  verifyFileWasOpened(fileIn);
+
+  char *basePath = strdup(argv[1]);
+
+  char *indexPath = getCompletePath(basePath, "/index.txt");
+
+  FILE *fileIn = fopen(indexPath, "r");
+  verifyFileWasOpened(fileIn, indexPath);
 
   int numberPages = 0;
   Page **pages = getPages(fileIn, &numberPages);
@@ -17,39 +19,42 @@ int main(int argc, char const *argv[])
   char **stopWords;
   int numberStopWords = 0;
 
-  FILE *stopWordsFile = fopen("./input/stopwords.txt", "r");
-  verifyFileWasOpened(stopWordsFile);
+  char *stpwrdPath = getCompletePath(basePath, "/stopwords.txt");
+  FILE *stopWordsFile = fopen(stpwrdPath, "r");
+  verifyFileWasOpened(stopWordsFile, stpwrdPath);
 
   stopWords = getStopWords(stopWordsFile, &numberStopWords);
 
-  //Ler graph.txt
-  FILE *graphFile = fopen("./input/graph.txt", "r");
+  char *graphPath = getCompletePath(basePath, "/graph.txt");
+  FILE *graphFile = fopen(graphPath, "r");
+  verifyFileWasOpened(graphFile, graphPath);
+
   readLinksOut(graphFile, pages, numberPages);
 
   for (int i = 0; i < numberPages; i++)
     setPageLinksIn(pages[i], pages, numberPages);
 
   Tst *tst = NULL;
-  tst = readPages(pages, numberPages, stopWords, numberStopWords, tst);
+  tst = readPages(pages, numberPages, stopWords, numberStopWords, tst, basePath);
 
   pageRank(pages, numberPages);
 
-  getSearchWords(numberPages, pages, tst);
+  getSearchWords(basePath, numberPages, pages, tst);
 
-  //-------------------------------------------
-  //Libera a memória
-  for (int i = 0; i < numberPages; i++)
-    destroyPage(pages[i]);
+  //-----------------Liberando a memória--------------------------
 
   for (int i = 0; i < numberStopWords; i++)
     free(stopWords[i]);
-
-  destroyTST(tst);
-  free(pages);
   free(stopWords);
+  destroyPageArray(pages, numberPages);
+  destroyTST(tst);
+  free(basePath);
+  free(indexPath);
+  free(stpwrdPath);
+  free(graphPath);
   fclose(stopWordsFile);
   fclose(fileIn);
   fclose(graphFile);
-  
+
   return 0;
 }
