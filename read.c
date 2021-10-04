@@ -180,7 +180,7 @@ void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
     while (word != NULL)
     {
       pagesSearch = searchTST(tst, word);
-
+  
       if (pagesSearch)
       {
         for (int i = 0; i < numberPages; i++)
@@ -191,43 +191,45 @@ void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
           int id = getPageId(pagesSearch[i]);
 
           weightId[id]++;
+        }
+      }
+          printf("%s ", word);
           word = strtok(NULL, token);
 
           numSearchWord++;
-        };
+    };
 
-        results = (Page **)malloc((numberPages) * sizeof(Page *));
-        int numResult = 0;
+      results = (Page **)malloc((numberPages) * sizeof(Page *));
+      int numResult = 0;
 
-        //Retornar a lista unica
-        for (int i = 0; i < numberPages; i++)
+      //Retornar a lista unica
+      for (int i = 0; i < numberPages; i++)
+      {
+        if (weightId[i] == numSearchWord)
         {
-          if (weightId[i] == numSearchWord)
-          {
-            results[numResult] = getPageById(pages, numberPages, i);
-            numResult++;
-          }
+          results[numResult] = getPageById(pages, numberPages, i);
+          numResult++;
         }
-
-        sortPage(results, numResult);
-
-        printf( "\npages:");
-        for (int i = 0; i < numResult; i++)
-        {
-          printf( "%s ", getPageName(results[i]));
-        }
-
-        printf( "\npr:");
-
-        for (int i = 0; i < numResult; i++)
-        {
-          printf( "%.18lf ", getPageRank(results[i]));
-        }
-        printf( "\n");
-        free(results);
       }
+
+      sortPage(results, numResult);
+
+      printf( "\npages:");
+      for (int i = 0; i < numResult; i++)
+      {
+        printf( "%s ", getPageName(results[i]));
+      }
+
+      printf( "\npr:");
+
+      for (int i = 0; i < numResult; i++)
+      {
+        printf( "%.18lf ", getPageRank(results[i]));
+      }
+      printf( "\n");
+      free(results);
+      fflush(stdout);
     }
-  }
 
   free(line);
   fclose(file);

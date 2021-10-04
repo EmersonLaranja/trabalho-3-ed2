@@ -1,264 +1,150 @@
-search:
+search:thing rang
+pages:305.txt
+pr:0.02869366702970378
+search:captain secrets
 pages:
 pr:
-search:
-pages:6718.txt 
-pr:0.003000000000000000 
-
+search:allure gerechtszaal
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:gekartelde 527
 pages:
 pr:
-search:
-pages:18914-8.txt 
-pr:0.003000000000000000 
-
+search:suckle tout
 pages:
 pr:
-search:
+search:awake compel
 pages:
 pr:
-search:
-pages:22668-8.txt 
-pr:0.003000000000000000 
-
+search:manage repartait
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:cool thing
 pages:
 pr:
-search:
-pages:1371.txt 
-pr:0.023339371639705817 
-
+search:8 repartait
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:key repartait
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:moment manners
 pages:
 pr:
-search:
+search:continues repartait
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:awe quarante
 pages:
 pr:
-search:
-pages:29539-8.txt 
-pr:0.019585741529389206 
-
+search:key allure
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:secrets thing
 pages:
 pr:
-search:
+search:thing lair
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:kuulla secrets
 pages:
 pr:
-search:
-pages:16262-8.txt 
-pr:0.003000000000000000 
-
+search:messrs hebben
 pages:
 pr:
-search:
-pages:1371.txt 
-pr:0.023339371639705817 
-
+search:kleine alone
 pages:
 pr:
-search:
+search:hebben quarante
 pages:
 pr:
-search:
-pages:29539-8.txt 
-pr:0.019585741529389206 
-
+search:awe kleine
 pages:
 pr:
-search:
+search:counsel moment
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:moment uit
 pages:
 pr:
-search:
-pages:10971-8.txt 
-pr:0.017957126406951959 
-
+search:allure 527
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
+search:secrets gerechtszaal
 pages:
 pr:
-search:
+search:hiernaast dott
 pages:
 pr:
-search:
-pages:10971-8.txt 
-pr:0.017957126406951959 
-
+search:secrets alone
 pages:
 pr:
-search:
+search:blessed girandoles
 pages:
 pr:
-search:
-pages:10905.txt 
-pr:0.003000000000000000 
-
+search:captain sa
 pages:
 pr:
-search:
-pages:6718.txt 
-pr:0.003000000000000000 
-
+search:superstitions furnished
 pages:
 pr:
-search:
-pages:23941-8.txt 
-pr:0.003000000000000000 
-
+search:superstitions moment
 pages:
 pr:
-search:
-pages:23941-8.txt 
-pr:0.003000000000000000 
-
+search:hiernaast compel
 pages:
 pr:
-search:
-pages:10971-8.txt 
-pr:0.017957126406951959 
-
+search:straight uit
 pages:
 pr:
-search:
-pages:10971-8.txt 
-pr:0.017957126406951959 
-
+search:superstitions continues
 pages:
 pr:
-search:
-pages:1371.txt 
-pr:0.023339371639705817 
-
+search:key 462
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:rocked
+pages:30380.txt
+pr:0.0536447599950189
+search:manage taan
 pages:
 pr:
-search:
-pages:30380.txt 
-pr:0.053644845706217588 
-search:
-pages:16262-8.txt 
-pr:0.003000000000000000 
-
+search:counsel rocked
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:superstitions 527
 pages:
 pr:
-search:
-pages:23941-8.txt 
-pr:0.003000000000000000 
-
+search:counsel cool
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:rocked moment
 pages:
 pr:
-search:
+search:counsel valise
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:gekartelde sa
 pages:
 pr:
-search:
-pages:15974-8.txt 
-pr:0.003000000000000000 
-
+search:quarante sa
 pages:
 pr:
-search:
-pages:29539-8.txt 
-pr:0.019585741529389206 
-
+search:alone tout
 pages:
 pr:
-search:
+search:writings toujours
 pages:
 pr:
-search:
-pages:18914-8.txt 
-pr:0.003000000000000000 
-
+search:counsel rang
 pages:
 pr:
-search:
-pages:26869-8.txt 
-pr:0.019850413704203231 
-
+search:thing continues
 pages:
 pr:
-search:
-pages:1371.txt 
-pr:0.023339371639705817 
-
+search:toujours allure
 pages:
 pr:
-search:
-pages:17661-8.txt 
-pr:0.097563185506559458 
-
-pages:
-pr:
-search:
+search:gekartelde tout
 pages:
 pr:
