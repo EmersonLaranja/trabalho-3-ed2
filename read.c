@@ -148,10 +148,6 @@ void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
   FILE *file = fopen(searchesPath, "r");
   verifyFileWasOpened(file, searchesPath);
 
-  char *outputPath = getCompletePath(basePath, "/saida.txt");
-  FILE *fileOut = fopen(outputPath, "w");
-  verifyFileWasOpened(file, outputPath);
-
   size_t len = 300;
   char *line = (char *)malloc(sizeof(char) * len);
   char token[] = " ";
@@ -173,14 +169,14 @@ void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
     for (int i = 0; i < numberPages; i++)
       weightId[i] = 0;
 
-    printf( "search:");
+    printf("search:");
     int resultsId[numberPages];
     word = strtok(line, token);
 
     while (word != NULL)
     {
       pagesSearch = searchTST(tst, word);
-  
+
       if (pagesSearch)
       {
         for (int i = 0; i < numberPages; i++)
@@ -193,49 +189,47 @@ void getSearchWords(char *basePath, int numberPages, Page **pages, Tst *tst)
           weightId[id]++;
         }
       }
-          printf("%s ", word);
-          word = strtok(NULL, token);
+      printf("%s ", word);
+      word = strtok(NULL, token);
 
-          numSearchWord++;
+      numSearchWord++;
     };
 
-      results = (Page **)malloc((numberPages) * sizeof(Page *));
-      int numResult = 0;
+    results = (Page **)malloc((numberPages) * sizeof(Page *));
+    int numResult = 0;
 
-      //Retornar a lista unica
-      for (int i = 0; i < numberPages; i++)
+    //Retornar a lista unica
+    for (int i = 0; i < numberPages; i++)
+    {
+      if (weightId[i] == numSearchWord)
       {
-        if (weightId[i] == numSearchWord)
-        {
-          results[numResult] = getPageById(pages, numberPages, i);
-          numResult++;
-        }
+        results[numResult] = getPageById(pages, numberPages, i);
+        numResult++;
       }
-
-      sortPage(results, numResult);
-
-      printf( "\npages:");
-      for (int i = 0; i < numResult; i++)
-      {
-        printf( "%s ", getPageName(results[i]));
-      }
-
-      printf( "\npr:");
-
-      for (int i = 0; i < numResult; i++)
-      {
-        printf( "%.18lf ", getPageRank(results[i]));
-      }
-      printf( "\n");
-      free(results);
-      fflush(stdout);
     }
+
+    sortPage(results, numResult);
+
+    printf("\npages:");
+    for (int i = 0; i < numResult; i++)
+    {
+      printf("%s ", getPageName(results[i]));
+    }
+
+    printf("\npr:");
+
+    for (int i = 0; i < numResult; i++)
+    {
+      printf("%.18lf ", getPageRank(results[i]));
+    }
+    printf("\n");
+    free(results);
+    fflush(stdout);
+  }
 
   free(line);
   fclose(file);
-  fclose(fileOut);
   free(searchesPath);
-  free(outputPath);
 }
 
 char *getCompletePath(char *basePath, char *fileName)
